@@ -3,12 +3,11 @@ import { RegisterUseCase } from "./register"
 import { compare } from "bcryptjs"
 import { InMemoryUsersRepository } from "@/repositories/in-memory/in-memory-users-repository"
 import { UserAlreadyExistsError } from "./errors/user-already-exists-error"
-import { string } from "zod"
 
 
 describe('Register Use Case', () => {
 
-    it('should hash user password upon registration', async () => {
+    it('should be able to  register', async () => {
 
         const usersRepository = new InMemoryUsersRepository()
         const registerUseCase = new RegisterUseCase(usersRepository)
@@ -20,7 +19,7 @@ describe('Register Use Case', () => {
         })
 
 
-        expect(user.id).toEqual(expect.any(string))
+        expect(user.id).toEqual(expect.any(String))
     })
 
 
