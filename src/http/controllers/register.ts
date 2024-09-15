@@ -4,14 +4,14 @@ import { RegisterUseCase } from '@/use-cases/register'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
 import { UserAlreadyExistsError } from '@/use-cases/errors/use-already-exists-error'
 
-export async function register(request: FastifyRequest, replay: FastifyReply) {
-  const registerBodyschema = z.object({
+export async function register(request: FastifyRequest, reply: FastifyReply) {
+  const registerBodySchema = z.object({
     name: z.string(),
     email: z.string().email(),
     password: z.string().min(6),
   })
 
-  const { name, email, password } = registerBodyschema.parse(request.body)
+  const { name, email, password } = registerBodySchema.parse(request.body)
 
   try {
     const usersRepository = new PrismaUsersRepository()
@@ -24,13 +24,11 @@ export async function register(request: FastifyRequest, replay: FastifyReply) {
     })
   } catch (err) {
     if (err instanceof UserAlreadyExistsError) {
-      return replay.status(409).send({
-        message: err.message,
-      })
+      return reply.status(409).send({ message: err.message })
     }
 
-    return replay.status(500).send() // TODO: fix me
+    throw err
   }
 
-  return replay.status(201).send()
+  return reply.status(201).send()
 }
