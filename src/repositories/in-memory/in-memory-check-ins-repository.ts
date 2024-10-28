@@ -4,13 +4,13 @@ import { randomUUID } from 'node:crypto'
 import dayjs from 'dayjs'
 
 export class InMemoryCkeckInsRepository implements CheckInsRepository {
-  public itens: CheckIn[] = []
+  public items: CheckIn[] = []
 
   async findByUserIdOnDate(userId: string, date: Date) {
     const startOfTheDay = dayjs(date).startOf('date')
     const EndOfTheDay = dayjs(date).endOf('date')
 
-    const checkOnSomeDate = this.itens.find((checkIn) => {
+    const checkOnSomeDate = this.items.find((checkIn) => {
       const checkInDate = dayjs(checkIn.created_at)
 
       const isOnSomeDate =
@@ -35,7 +35,7 @@ export class InMemoryCkeckInsRepository implements CheckInsRepository {
       created_at: new Date(),
     }
 
-    this.itens.push(checkIn)
+    this.items.push(checkIn)
 
     return checkIn
   }
