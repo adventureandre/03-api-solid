@@ -1,29 +1,48 @@
-import { User, Prisma, CheckIn } from '@prisma/client'
-import { CheckInsRepository } from '../check-ins-repository'
-import { randomUUID } from 'node:crypto'
+import { CheckInsRepository } from '@/repositories/check-ins-repository'
+import { Prisma, CheckIn } from '@prisma/client'
 import dayjs from 'dayjs'
+import { randomUUID } from 'node:crypto'
 
-export class InMemoryCkeckInsRepository implements CheckInsRepository {
+export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
 
-  async findByUserIdOnDate(userId: string, date: Date) {
-    const startOfTheDay = dayjs(date).startOf('date')
-    const EndOfTheDay = dayjs(date).endOf('date')
+  async findById(id: string) {
+    const checkIn = this.items.find((item) => item.id === id)
 
-    const checkOnSomeDate = this.items.find((checkIn) => {
-      const checkInDate = dayjs(checkIn.created_at)
-
-      const isOnSomeDate =
-        checkInDate.isAfter(startOfTheDay) && checkInDate.isBefore(EndOfTheDay)
-
-      return checkIn.user_id === userId && isOnSomeDate
-    })
-
-    if (!checkOnSomeDate) {
+    if (!checkIn) {
       return null
     }
 
-    return checkOnSomeDate
+    return checkIn
+  }
+
+  async findByUserIdOnDate(userId: string, date: Date) {
+    const startOfTheDay = dayjs(date).startOf('date')
+    const endOfTheDay = dayjs(date).endOf('date')
+
+    const checkInOnSameDate = this.items.find((checkIn) => {
+      const checkInDate = dayjs(checkIn.created_at)
+      const isOnSameDate =
+        checkInDate.isAfter(startOfTheDay) && checkInDate.isBefore(endOfTheDay)
+
+      return checkIn.user_id === userId && isOnSameDate
+    })
+
+    if (!checkInOnSameDate) {
+      return null
+    }
+
+    return checkInOnSameDate
+  }
+
+  async findManyByUserId(userId: string, page: number) {
+    return this.items
+      .filter((checkIn) => checkIn.user_id === userId)
+      .slice((page - 1) * 20, page * 20)
+  }
+
+  async countByUserId(userId: string) {
+    return this.items.filter((checkIn) => checkIn.user_id === userId).length
   }
 
   async create(data: Prisma.CheckInUncheckedCreateInput) {
@@ -40,9 +59,13 @@ export class InMemoryCkeckInsRepository implements CheckInsRepository {
     return checkIn
   }
 
-  async findManybyUserId(userId: string, page: number) {
-    return this.items
-      .filter((item) => item.user_id === userId)
-      .slice((page - 1) * 20, page * 20)
+  async save(checkIn: CheckIn) {
+    const checkInIndex = this.items.findIndex((item) => item.id === checkIn.id)
+
+    if (checkInIndex >= 0) {
+      this.items[checkInIndex] = checkIn
+    }
+
+    return checkIn
   }
 }

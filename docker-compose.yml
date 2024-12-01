@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   api-solid-pg:
     image: bitnami/postgresql
@@ -6,4 +8,4 @@ services:
     environment:
       - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=api-solid
+      - POSTGRESQL_DATABASE=ignitenode03

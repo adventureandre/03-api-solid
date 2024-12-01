@@ -1,5 +1,5 @@
-import type { Gym } from '@prisma/client'
 import { GymsRepository } from '@/repositories/gyms-repository'
+import { Gym } from '@prisma/client'
 
 interface CreateGymUseCaseRequest {
   title: string
@@ -31,6 +31,8 @@ export class CreateGymUseCase {
       longitude,
     })
 
-    return { gym }
+    return {
+      gym,
+    }
   }
 }

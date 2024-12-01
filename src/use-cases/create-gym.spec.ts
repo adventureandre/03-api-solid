@@ -1,5 +1,5 @@
-import { expect, describe, it, beforeEach } from 'vitest'
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository'
+import { expect, describe, it, beforeEach } from 'vitest'
 import { CreateGymUseCase } from './create-gym'
 
 let gymsRepository: InMemoryGymsRepository
@@ -10,9 +10,10 @@ describe('Create Gym Use Case', () => {
     gymsRepository = new InMemoryGymsRepository()
     sut = new CreateGymUseCase(gymsRepository)
   })
-  it('should be able to create gym', async () => {
+
+  it('should to create gym', async () => {
     const { gym } = await sut.execute({
-      title: 'JavaScrip Gym',
+      title: 'JavaScript Gym',
       description: null,
       phone: null,
       latitude: -27.2092052,
