@@ -1,12 +1,13 @@
-import { Environment } from 'vitest'
+import { Environment } from 'vitest/environments'
 
 export default <Environment>{
   name: 'prisma',
+  transformMode: 'ssr',
   async setup() {
     console.log('Setup')
 
     return {
-      async teardown() {
+      teardown() {
         console.log('Teardown')
       },
     }
