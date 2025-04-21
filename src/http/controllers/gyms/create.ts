@@ -1,7 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { makeRegisterUseCase } from '@/use-cases/factories/make-register-user-use-case'
 import { makeCreateGymUseCase } from '@/use-cases/factories/make-create-gym-use-case'
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
@@ -9,26 +7,26 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     title: z.string(),
     description: z.string().nullable(),
     phone: z.string().nullable(),
-    latitude: z.number().refine(value =>{
-        return Math.abs(value) <= 90 
+    latitude: z.number().refine((value) => {
+      return Math.abs(value) <= 90
     }),
-    longitude: z.number().refine(value =>{
-        return Math.abs(value) <= 180
+    longitude: z.number().refine((value) => {
+      return Math.abs(value) <= 180
     }),
   })
 
-  const { title, description, phone, latitude, longitude } = createBodySchema.parse(request.body)
+  const { title, description, phone, latitude, longitude } =
+    createBodySchema.parse(request.body)
 
-    const createGymUseCase = makeCreateGymUseCase()
+  const createGymUseCase = makeCreateGymUseCase()
 
-    await createGymUseCase.execute({
-     title,
-     description,
-     phone,
-     latitude,
-     longitude,
-    })
-
+  await createGymUseCase.execute({
+    title,
+    description,
+    phone,
+    latitude,
+    longitude,
+  })
 
   return reply.status(201).send()
 }
